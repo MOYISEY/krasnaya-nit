@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests/e2e',fullyParallel:true,timeout:30000,expect:{timeout:5000},use:{baseURL:process.env.LIVE_URL||'http://127.0.0.1:4173',headless:true,viewport:{width:1440,height:1100}},webServer:process.env.LIVE_URL||process.env.NO_WEB_SERVER?undefined:{command:'node scripts/serve.mjs',url:'http://127.0.0.1:4173',reuseExistingServer:!process.env.CI},reporter:'list'});

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="Локальная доска расследования ведущего. Проверьте потерю улики и подготовьте безопасные записи для игроков.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Красная нить · доска ведущего</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">К расследованию</a>
+  <header class="masthead">
+    <div class="brand"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 9L34 20 13 35" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="4"/><circle cx="34" cy="20" r="4"/><circle cx="13" cy="35" r="4"/></svg><div><h1>Красная нить</h1><p>Доска расследования ведущего</p></div></div>
+    <div class="header-actions"><span class="local-badge">Только в этом браузере</span><button id="help-button" class="quiet">Как работать</button><button id="files-button" class="quiet">Дело и копии</button><button id="player-button" class="primary">Снимок игрокам</button></div>
+  </header>
+  <main id="workspace">
+    <div class="case-bar"><div class="case-heading"><span class="eyebrow">МАТЕРИАЛЫ ДЕЛА</span><button id="case-title" title="Изменить название дела"></button></div><div id="stats" class="stats"></div></div>
+    <div class="toolbar"><div class="view-tabs" role="group" aria-label="Вид расследования"><button id="board-view" aria-pressed="true">Доска</button><button id="list-view" aria-pressed="false">Список</button></div><span class="toolbar-divider"></span><button id="add-node">+ Карточка</button><button id="add-edge">+ Связь</button><div class="history-controls"><button id="undo" title="Отменить (Ctrl+Z)" aria-label="Отменить">↶</button><button id="redo" title="Повторить (Ctrl+Shift+Z)" aria-label="Повторить">↷</button></div><span id="saved" class="saved">Демо · изменения ещё не сохранены</span></div>
+    <div class="workspace-grid">
+      <section class="board-column" aria-label="Расследование">
+        <div id="board" tabindex="0" aria-label="Доска. Стрелки перемещают обзор. Плюс и минус меняют масштаб. Карточки доступны клавишей Tab.">
+          <div class="board-watermark" aria-hidden="true">ВСЁ СВЯЗАНО.<br>НО КАК?</div>
+          <div id="world"><svg id="threads" aria-hidden="true" width="20000" height="20000" viewBox="-10000 -10000 20000 20000"><defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8"/></marker></defs><g id="edge-paths"></g></svg><div id="cards"></div></div>
+          <div class="board-corner"><span>Направление нити = путь к новой зацепке</span><div class="zoom-controls"><button id="zoom-out" aria-label="Уменьшить масштаб">−</button><output id="zoom-label">100%</output><button id="zoom-in" aria-label="Увеличить масштаб">+</button><button id="fit">Вписать</button></div></div>
+        </div>
+        <div id="list" class="accessible-list" hidden></div>
+        <div class="legend" aria-label="Обозначения"><span><i class="legend-found"></i>Раскрыто</span><span><i class="legend-hidden"></i>Не раскрыто</span><span><i class="legend-key"></i>Ключевой вывод</span><span><i class="legend-lost"></i>Путь потерян</span></div>
+        <section class="analysis-panel" aria-labelledby="analysis-heading"><div class="analysis-intro"><span class="eyebrow">ЕСЛИ ЭТО ПРОПУСТЯТ</span><h2 id="analysis-heading">Проверка прочности</h2><p>Уберите одну улику или источник и проверьте, к каким выводам больше нет пути.</p></div><div class="analysis-work"><div class="failure-controls"><label>Что проверить<select id="failure-kind"><option value="none">Обычный ход дела</option><option value="edge">Пропущена улика</option><option value="node">Пропущен источник</option></select></label><label id="failure-item-label" hidden><span id="failure-item-caption">Улика</span><select id="failure-item"></select></label></div><div id="analysis-result" aria-live="polite"></div></div></section>
+      </section>
+      <aside id="inspector" aria-label="Карточка и связи"></aside>
+    </div>
+    <footer class="app-footer"><span id="storage-note">Данные хранятся локально. Очистка браузера удалит дело — сохраняйте JSON-копии.</span><span>Для любой системы · без аккаунта</span></footer>
+  </main>
+  <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog>
+  <input id="import-file" type="file" accept=".json,application/json" hidden>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

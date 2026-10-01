@@ -1,0 +1,15 @@
+import {chromium} from '@playwright/test';
+import {mkdir} from 'node:fs/promises';
+const url=process.env.LIVE_URL||'http://127.0.0.1:4173',prefix=process.env.LIVE_URL?'live-':'';
+await mkdir('media',{recursive:true});const browser=await chromium.launch();
+const desktop=await browser.newPage({viewport:{width:1440,height:1100}});
+const errors=[];desktop.on('pageerror',e=>errors.push(e.message));
+await desktop.goto(url);await desktop.locator('.node').first().waitFor();
+await desktop.screenshot({path:`media/${prefix}desktop.png`,fullPage:true});
+await desktop.locator('#failure-kind').selectOption('edge');await desktop.locator('#failure-item').selectOption('e6');
+await desktop.screenshot({path:`media/${prefix}failure-analysis.png`,fullPage:true});
+const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});mobile.on('pageerror',e=>errors.push(e.message));
+await mobile.goto(url);await mobile.locator('.list-card').first().waitFor();await mobile.screenshot({path:`media/${prefix}mobile.png`,fullPage:true});
+await mobile.screenshot({path:`media/${prefix}mobile-first-screen.png`});
+console.log(JSON.stringify({url,desktop:'1440×1100',mobile:'390×844 Chromium viewport, not a physical device',errors}));
+await browser.close();if(errors.length)process.exitCode=1;
